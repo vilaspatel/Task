@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-v2
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: "2.0"        
+    spec:
+      initContainers:
+      - name: busybox
+        image: busybox
+        command:
+        - cp
+        - "/var/index.html"
+        - "/workdir/index.html"     
+        volumeMounts:      
+          - name: web-content
+            mountPath: /var/index.html
+            subPath: index.html
+            readOnly: true 
+          - name: workdir
+            mountPath: /workdir  
+      containers:
+      - name: nginx
+        image: nginx:1.19.4
+        ports:
+        - containerPort: 8090
+        volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d/nginx.conf
+              subPath: nginx.conf
+              readOnly: true 
+            - name: workdir
+              mountPath: /var/www                     
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+      - name: web-content
+        configMap:
+          name: web-content-v2
+          items:
+            - key: index.html
+              path: index.html  
+      - name: workdir
+        emptyDir: {}                     
+
