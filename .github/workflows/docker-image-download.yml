@@ -25,3 +25,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: download ghcr image
         run: docker pull ghcr.io/vilaspatel/task:main
+      - name: tag docker image 
+        run: docker tag ghcr.io/vilaspatel/task:main ghcr.io/vilaspatel/task:v1.0.0
+      - name: push docker image
+        run: docker push ghcr.io/vilaspatel/task:v1.0.0
