@@ -22,7 +22,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN1 }}
       - name: download ghcr image
         run: docker pull ghcr.io/vilaspatel/task:main
       - name: tag docker image 
